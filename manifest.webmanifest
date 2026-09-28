@@ -1,0 +1,26 @@
+{
+  "name": "MARLEN — Дом цветов и подарков",
+  "short_name": "MARLEN",
+  "description": "Дом цветов и подарков в Ансане. Авторские букеты и доставка по Корее.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#17070c",
+  "theme_color": "#17070c",
+  "lang": "ru",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "maskable-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
