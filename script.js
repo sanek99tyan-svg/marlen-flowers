@@ -55,10 +55,8 @@ $$('.magnetic').forEach(btn => {
 
 window.addEventListener('scroll', () => {
   const y = scrollY;
-  const visual = $('.hero-visual');
   const flower = $('.hero-flower-svg');
-  if(innerWidth > 800){
-    visual.style.transform = `translateY(${y*.05}px)`;
+  if(innerWidth > 800 && flower){
     flower.style.marginBottom = `${y*.03}px`;
   }
 });
@@ -69,3 +67,47 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js').catch(() => {});
   });
 }
+
+
+// Luxury motion: drawn botanical signatures
+const botanicalIO = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('animate'); botanicalIO.unobserve(e.target); } });
+},{threshold:.22});
+$$('.botanical-signature').forEach(el => botanicalIO.observe(el));
+
+// Hero reel counter synchronized to 4.5s steps
+const reelIndex = $('.reel-index b');
+if(reelIndex){
+  let reelStep = 0;
+  setInterval(() => {
+    reelStep = (reelStep + 1) % 4;
+    reelIndex.animate([{opacity:.25,transform:'translateY(7px)'},{opacity:1,transform:'translateY(0)'}],{duration:420,easing:'ease-out'});
+    reelIndex.textContent = String(reelStep + 1).padStart(2,'0');
+  },4500);
+}
+
+// Premium 3D tilt for collection cards on pointer devices
+if(matchMedia('(hover:hover) and (pointer:fine)').matches){
+  $$('.collection-card').forEach(card => {
+    card.addEventListener('pointermove', e => {
+      const r = card.getBoundingClientRect();
+      const rx = ((e.clientY-r.top)/r.height-.5)*-5;
+      const ry = ((e.clientX-r.left)/r.width-.5)*6;
+      card.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-4px)`;
+    });
+    card.addEventListener('pointerleave',()=> card.style.transform='');
+  });
+}
+
+// Slow parallax for selected premium blocks
+let ticking=false;
+window.addEventListener('scroll',()=>{
+  if(ticking) return;
+  ticking=true;
+  requestAnimationFrame(()=>{
+    const y=scrollY;
+    $$('.line-art.left').forEach(el=>el.style.transform=`translateY(${y*.018}px)`);
+    $$('.line-art.right').forEach(el=>el.style.transform=`scaleX(-1) translateY(${-y*.012}px)`);
+    ticking=false;
+  });
+},{passive:true});
