@@ -75,17 +75,6 @@ const botanicalIO = new IntersectionObserver(entries => {
 },{threshold:.22});
 $$('.botanical-signature').forEach(el => botanicalIO.observe(el));
 
-// Hero reel counter synchronized to 4.5s steps
-const reelIndex = $('.reel-index b');
-if(reelIndex){
-  let reelStep = 0;
-  setInterval(() => {
-    reelStep = (reelStep + 1) % 4;
-    reelIndex.animate([{opacity:.25,transform:'translateY(7px)'},{opacity:1,transform:'translateY(0)'}],{duration:420,easing:'ease-out'});
-    reelIndex.textContent = String(reelStep + 1).padStart(2,'0');
-  },4500);
-}
-
 // Premium 3D tilt for collection cards on pointer devices
 if(matchMedia('(hover:hover) and (pointer:fine)').matches){
   $$('.collection-card').forEach(card => {
@@ -111,3 +100,22 @@ window.addEventListener('scroll',()=>{
     ticking=false;
   });
 },{passive:true});
+
+
+// Editorial floral stage: cursor depth without interfering with vertical ride animations
+if(matchMedia('(hover:hover) and (pointer:fine)').matches){
+  const stage=$('.floral-stage');
+  if(stage){
+    stage.addEventListener('pointermove',e=>{
+      const r=stage.getBoundingClientRect();
+      const x=(e.clientX-r.left)/r.width-.5;
+      const y=(e.clientY-r.top)/r.height-.5;
+      stage.style.setProperty('--mx',x);
+      stage.style.setProperty('--my',y);
+      $$('.floral-caption',stage).forEach(el=>el.style.transform=`translate(${x*10}px,${y*8}px)`);
+    });
+    stage.addEventListener('pointerleave',()=>{
+      const cap=$('.floral-caption',stage); if(cap) cap.style.transform='';
+    });
+  }
+}
