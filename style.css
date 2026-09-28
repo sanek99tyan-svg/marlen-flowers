@@ -113,3 +113,55 @@ linear-gradient(180deg,transparent 55%,rgba(10,4,7,.24))}
 .botanical-signature{width:130vw}
 .micro-tag{display:none}
 }
+
+
+/* ===== EDITORIAL FLORAL HERO — reference-inspired ===== */
+.editorial-floral{height:min(76vh,790px);position:relative;display:flex;align-items:center;justify-content:center}
+.floral-stage{position:relative;width:100%;height:100%;min-height:620px;overflow:hidden;border:1px solid rgba(255,255,255,.12);background:
+linear-gradient(180deg,rgba(255,255,255,.025),transparent 18%),
+radial-gradient(circle at 55% 47%,rgba(118,24,51,.22),transparent 36%),
+#11090c;box-shadow:0 45px 120px rgba(0,0,0,.42)}
+.floral-stage:before{content:"";position:absolute;inset:22px;border:1px solid rgba(255,255,255,.06);pointer-events:none}
+.floral-stage:after{content:"";position:absolute;left:0;right:0;bottom:0;height:24%;background:linear-gradient(transparent,#11090c 92%);pointer-events:none;z-index:12}
+.flower-object{position:absolute;bottom:-35%;overflow:visible;filter:drop-shadow(0 18px 22px rgba(0,0,0,.32));will-change:transform}
+.flower-object .stem{fill:none;stroke:#566653;stroke-width:4;stroke-linecap:round}
+.flower-object .leaf{fill:#32483b;stroke:#61725b;stroke-width:1}
+.flower-object .bloom ellipse{stroke:rgba(255,255,255,.1);stroke-width:.7;transform-box:fill-box;transform-origin:center}
+.flower-object .bloom circle{fill:#2a1017}
+.bloom-red ellipse{fill:#8c1e32}.bloom-red circle{fill:#13070b}
+.bloom-rose ellipse{fill:#a94d68}.bloom-purple ellipse{fill:#5c456c}.bloom-cream ellipse{fill:#ded0b6}.bloom-orange ellipse{fill:#a8562a}
+.f1{width:34%;left:29%;z-index:7;animation:flowerRideA 13s cubic-bezier(.62,0,.28,1) infinite}
+.f2{width:39%;left:50%;z-index:8;animation:flowerRideB 15s 1.2s cubic-bezier(.62,0,.28,1) infinite}
+.f3{width:30%;left:9%;z-index:6;animation:flowerRideC 14s 2.1s cubic-bezier(.62,0,.28,1) infinite}
+.f4{width:26%;left:72%;z-index:5;animation:flowerRideD 16s .4s cubic-bezier(.62,0,.28,1) infinite}
+.f5{width:33%;left:37%;z-index:4;animation:flowerRideE 17s 3s cubic-bezier(.62,0,.28,1) infinite}
+.floral-caption{position:absolute;left:34px;top:34px;z-index:20;display:flex;flex-direction:column;gap:10px}
+.floral-caption span{font-size:8px;letter-spacing:.22em;color:#a58e96}
+.floral-caption b{font:500 clamp(24px,2.7vw,42px)/.98 'Playfair Display',serif;letter-spacing:-.02em;max-width:280px}
+.floral-rail{position:absolute;right:20px;top:50%;transform:translateY(-50%);z-index:20;display:grid;gap:9px}
+.floral-rail i{display:block;width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.28)}
+.floral-rail i:nth-child(2){height:28px;border-radius:4px;background:#f0d9df}
+.editorial-floral .floating-card{z-index:30}
+.editorial-floral .card-top{left:-35px;top:24%}
+.editorial-floral .card-bottom{right:-28px;bottom:13%}
+.hero-copy{max-width:760px}
+.hero h1{font-size:clamp(60px,7vw,118px)}
+.hero-copy:after{content:"FLOWERS / GIFTS / SEOUL · ANSAN";display:block;margin-top:46px;font-size:8px;letter-spacing:.28em;color:#816d74}
+@keyframes flowerRideA{0%{transform:translateY(120%) rotate(-3deg)}18%,60%{transform:translateY(4%) rotate(0)}75%,100%{transform:translateY(-125%) rotate(3deg)}}
+@keyframes flowerRideB{0%,8%{transform:translateY(145%) rotate(3deg)}27%,67%{transform:translateY(0) rotate(-1deg)}82%,100%{transform:translateY(-145%) rotate(-5deg)}}
+@keyframes flowerRideC{0%,15%{transform:translateY(135%) rotate(-5deg)}34%,72%{transform:translateY(7%) rotate(1deg)}88%,100%{transform:translateY(-135%) rotate(4deg)}}
+@keyframes flowerRideD{0%,3%{transform:translateY(140%) rotate(4deg)}25%,63%{transform:translateY(2%) rotate(-2deg)}80%,100%{transform:translateY(-140%) rotate(-4deg)}}
+@keyframes flowerRideE{0%,20%{transform:translateY(135%) rotate(2deg)}39%,77%{transform:translateY(12%) rotate(-2deg)}92%,100%{transform:translateY(-135%) rotate(3deg)}}
+@media(max-width:1100px){
+  .editorial-floral{height:68vh;max-height:690px;margin-left:8vw}
+  .floral-stage{min-height:540px}
+}
+@media(max-width:700px){
+  .editorial-floral{height:60vh;max-height:580px;margin:18px 0 0 28px}
+  .floral-stage{min-height:0}
+  .floral-stage:before{inset:10px}
+  .floral-caption{left:20px;top:20px}
+  .floral-caption b{font-size:25px}
+  .f1{width:45%;left:24%}.f2{width:51%;left:48%}.f3{width:42%;left:0}.f4{width:36%;left:70%}.f5{width:43%;left:34%}
+  .editorial-floral .card-top{left:-20px}.editorial-floral .card-bottom{right:-5px}
+}
