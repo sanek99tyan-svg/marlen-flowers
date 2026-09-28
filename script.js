@@ -62,3 +62,10 @@ window.addEventListener('scroll', () => {
     flower.style.marginBottom = `${y*.03}px`;
   }
 });
+
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  });
+}
