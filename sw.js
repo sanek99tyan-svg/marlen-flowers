@@ -1,4 +1,4 @@
-const CACHE_NAME = 'marlen-v1';
+const CACHE_NAME = 'marlen-v2';
 const CORE = ['./', './index.html', './style.css', './script.js', './manifest.webmanifest', './icon.svg', './maskable-icon.svg'];
 
 self.addEventListener('install', event => {
