@@ -1,121 +1,106 @@
-const $ = (s, r=document) => r.querySelector(s);
-const $$ = (s, r=document) => [...r.querySelectorAll(s)];
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>[...r.querySelectorAll(s)];
 
-const header = $('.topbar');
-window.addEventListener('scroll', () => header.classList.toggle('scrolled', scrollY > 40));
+const header=$('.site-header');
+window.addEventListener('scroll',()=>header.classList.toggle('scrolled',scrollY>35),{passive:true});
 
-const menu = $('.mobile-menu');
-$('.menu-btn').addEventListener('click', () => menu.classList.add('open'));
-$('.menu-close').addEventListener('click', () => menu.classList.remove('open'));
-$$('.mobile-menu a').forEach(a => a.addEventListener('click', () => menu.classList.remove('open')));
+const drawer=$('.mobile-drawer');
+$('.menu-toggle')?.addEventListener('click',()=>drawer.classList.add('open'));
+$('.drawer-close')?.addEventListener('click',()=>drawer.classList.remove('open'));
+$$('.mobile-drawer a').forEach(a=>a.addEventListener('click',()=>drawer.classList.remove('open')));
 
-const io = new IntersectionObserver(entries => {
-  entries.forEach(entry => {
-    if(entry.isIntersecting){
-      entry.target.classList.add('visible');
-      if(entry.target.classList.contains('counter')) animateCounter(entry.target);
-      io.unobserve(entry.target);
-    }
+const revealIO=new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+    if(!entry.isIntersecting)return;
+    entry.target.classList.add('visible');
+    entry.target.querySelectorAll?.('[data-counter]').forEach(startCounter);
+    revealIO.unobserve(entry.target);
   });
 },{threshold:.14});
-$$('.reveal, .counter').forEach(el => io.observe(el));
+$$('[data-reveal]').forEach(el=>revealIO.observe(el));
 
-const lineIO = new IntersectionObserver(entries => {
-  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('animate'); });
-},{threshold:.35});
-$$('.line-art').forEach(el => lineIO.observe(el));
+const drawIO=new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.classList.add('drawn');
+      drawIO.unobserve(entry.target);
+    }
+  });
+},{threshold:.22});
+$$('.draw-svg').forEach(el=>drawIO.observe(el));
 
-function animateCounter(el){
-  const target = Number(el.dataset.target || 0);
-  const start = performance.now();
-  const dur = 1200;
-  const step = now => {
-    const p = Math.min((now-start)/dur,1);
-    el.textContent = Math.floor(target*(1-Math.pow(1-p,3)));
-    if(p<1) requestAnimationFrame(step); else el.textContent = target;
-  };
+function startCounter(el){
+  if(el.dataset.done)return;
+  el.dataset.done='1';
+  const target=Number(el.dataset.counter||0);
+  const start=performance.now();
+  const dur=1200;
+  function step(now){
+    const p=Math.min((now-start)/dur,1);
+    el.textContent=Math.floor(target*(1-Math.pow(1-p,3)));
+    if(p<1)requestAnimationFrame(step);else el.textContent=target;
+  }
   requestAnimationFrame(step);
 }
 
-const glow = $('.cursor-glow');
-window.addEventListener('pointermove', e => {
-  glow.style.left = e.clientX+'px';
-  glow.style.top = e.clientY+'px';
-});
+const orb=$('.cursor-orb');
+window.addEventListener('pointermove',e=>{
+  if(!orb)return;
+  orb.style.left=e.clientX+'px';
+  orb.style.top=e.clientY+'px';
+},{passive:true});
 
-$$('.magnetic').forEach(btn => {
-  btn.addEventListener('mousemove', e => {
-    const r = btn.getBoundingClientRect();
-    const x = (e.clientX-r.left-r.width/2)*.12;
-    const y = (e.clientY-r.top-r.height/2)*.18;
-    btn.style.transform = `translate(${x}px,${y}px)`;
+$$('.magnetic').forEach(el=>{
+  el.addEventListener('pointermove',e=>{
+    const r=el.getBoundingClientRect();
+    const x=(e.clientX-r.left-r.width/2)*.12;
+    const y=(e.clientY-r.top-r.height/2)*.16;
+    el.style.transform=`translate(${x}px,${y}px)`;
   });
-  btn.addEventListener('mouseleave', () => btn.style.transform = 'translate(0,0)');
+  el.addEventListener('pointerleave',()=>el.style.transform='');
 });
 
-window.addEventListener('scroll', () => {
-  const y = scrollY;
-  const flower = $('.hero-flower-svg');
-  if(innerWidth > 800 && flower){
-    flower.style.marginBottom = `${y*.03}px`;
-  }
-});
-
-
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').catch(() => {});
-  });
+const counter=$('.scene-counter strong');
+if(counter){
+  let i=0;
+  setInterval(()=>{
+    i=(i+1)%4;
+    counter.animate([{opacity:.25,transform:'translateY(7px)'},{opacity:1,transform:'none'}],{duration:380,easing:'ease-out'});
+    counter.textContent=String(i+1).padStart(2,'0');
+  },3750);
 }
 
-
-// Luxury motion: drawn botanical signatures
-const botanicalIO = new IntersectionObserver(entries => {
-  entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('animate'); botanicalIO.unobserve(e.target); } });
-},{threshold:.22});
-$$('.botanical-signature').forEach(el => botanicalIO.observe(el));
-
-// Premium 3D tilt for collection cards on pointer devices
-if(matchMedia('(hover:hover) and (pointer:fine)').matches){
-  $$('.collection-card').forEach(card => {
-    card.addEventListener('pointermove', e => {
-      const r = card.getBoundingClientRect();
-      const rx = ((e.clientY-r.top)/r.height-.5)*-5;
-      const ry = ((e.clientX-r.left)/r.width-.5)*6;
-      card.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-4px)`;
-    });
-    card.addEventListener('pointerleave',()=> card.style.transform='');
-  });
-}
-
-// Slow parallax for selected premium blocks
-let ticking=false;
+let raf=false;
 window.addEventListener('scroll',()=>{
-  if(ticking) return;
-  ticking=true;
+  if(raf)return;
+  raf=true;
   requestAnimationFrame(()=>{
     const y=scrollY;
-    $$('.line-art.left').forEach(el=>el.style.transform=`translateY(${y*.018}px)`);
-    $$('.line-art.right').forEach(el=>el.style.transform=`scaleX(-1) translateY(${-y*.012}px)`);
-    ticking=false;
+    $$('[data-parallax]').forEach(el=>{
+      const speed=Number(el.dataset.parallax||0);
+      const rect=el.getBoundingClientRect();
+      const center=rect.top+rect.height/2-innerHeight/2;
+      el.style.transform=`translateY(${-center*speed}px)`;
+    });
+    raf=false;
   });
 },{passive:true});
 
-
-// Editorial floral stage: cursor depth without interfering with vertical ride animations
 if(matchMedia('(hover:hover) and (pointer:fine)').matches){
-  const stage=$('.floral-stage');
-  if(stage){
-    stage.addEventListener('pointermove',e=>{
-      const r=stage.getBoundingClientRect();
-      const x=(e.clientX-r.left)/r.width-.5;
-      const y=(e.clientY-r.top)/r.height-.5;
-      stage.style.setProperty('--mx',x);
-      stage.style.setProperty('--my',y);
-      $$('.floral-caption',stage).forEach(el=>el.style.transform=`translate(${x*10}px,${y*8}px)`);
-    });
-    stage.addEventListener('pointerleave',()=>{
-      const cap=$('.floral-caption',stage); if(cap) cap.style.transform='';
-    });
-  }
+  const scene=$('.scene-frame');
+  scene?.addEventListener('pointermove',e=>{
+    const r=scene.getBoundingClientRect();
+    const x=(e.clientX-r.left)/r.width-.5;
+    const y=(e.clientY-r.top)/r.height-.5;
+    $('.scene-label')?.style.setProperty('transform',`translate(${x*10}px,${y*8}px)`);
+    $('.scene-counter')?.style.setProperty('transform',`translate(${x*-7}px,${y*5}px)`);
+  });
+  scene?.addEventListener('pointerleave',()=>{
+    if($('.scene-label'))$('.scene-label').style.transform='';
+    if($('.scene-counter'))$('.scene-counter').style.transform='';
+  });
+}
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 }
